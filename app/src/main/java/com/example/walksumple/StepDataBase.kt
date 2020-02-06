@@ -5,7 +5,7 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 
-@Database(entities = [StepEntity::class],version = 1)
+@Database(entities = [StepEntity::class],version = 1,exportSchema = false)
 abstract class StepDataBase : RoomDatabase(){
     abstract fun dao(): StepDao
 
