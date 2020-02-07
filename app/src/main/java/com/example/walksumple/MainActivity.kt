@@ -18,10 +18,6 @@ import java.util.*
 
 class MainActivity : AppCompatActivity(), SensorEventListener {
 
-    private lateinit var mSensorManager: SensorManager
-    private lateinit var mStepDetectorSensor: Sensor
-    private lateinit var mStepCanterSensor: Sensor
-
     private var stepCounter: Int = 0
     private var sensorCounter: Int = 0
     private lateinit var prefs: SharedPreferences
@@ -54,9 +50,6 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
         prefs = getSharedPreferences("user", Context.MODE_PRIVATE)
         intentService = Intent(this,StepService::class.java)
         bindService(intentService,connection,Context.BIND_AUTO_CREATE)
-//        mSensorManager = getSystemService(Context.SENSOR_SERVICE) as SensorManager
-//        mStepDetectorSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_STEP_DETECTOR)
-//        mStepCanterSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_STEP_COUNTER)
         stepCounter = prefs.getInt("walk", 0)
         sensorCounter = prefs.getInt("sensor", 0)
     }

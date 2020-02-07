@@ -21,6 +21,7 @@ class StepService : Service(), SensorEventListener{
 
     private lateinit var mSensorManager: SensorManager
     private lateinit var mstepConterSensor: Sensor
+    private lateinit var serviceViewModel: StepViewModel
     var step = 0
     private val manager = WorkManager.getInstance(this)
 
@@ -28,11 +29,11 @@ class StepService : Service(), SensorEventListener{
         super.onCreate()
         mSensorManager = getSystemService(Context.SENSOR_SERVICE) as SensorManager
         mstepConterSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_STEP_COUNTER)
-//        viewModel = ViewModelProvider.AndroidViewModelFactory.getInstance(application)
-//            .create()
         mSensorManager.unregisterListener(this, mstepConterSensor)
-        Toast.makeText(this,"はじめ",Toast.LENGTH_SHORT).show()
-        manager.enqueue(PeriodicWorkRequest.Builder(MyWork::class.java, Duration.ofMillis(15)).build())
+
+
+//        Toast.makeText(this,"はじめ",Toast.LENGTH_SHORT).show()
+//        manager.enqueue(PeriodicWorkRequest.Builder(MyWork::class.java, Duration.ofMillis(15)).build())
     }
 
     override fun onBind(p0: Intent?): IBinder? {
@@ -43,7 +44,7 @@ class StepService : Service(), SensorEventListener{
 
     override fun onSensorChanged(event: SensorEvent) {
         if (event.sensor.type == Sensor.TYPE_STEP_COUNTER) {
-            step++
+            serviceViewModel.getStep(step++)
             Log.d("step",step.toString())
         }
     }
@@ -54,7 +55,6 @@ class StepService : Service(), SensorEventListener{
         getSharedPreferences("STEP", Context.MODE_PRIVATE).edit().putInt("step", step).apply()
 
     }
-
     inner class StepBindar : Binder() {
         fun getBindar(): StepService = this@StepService
     }
