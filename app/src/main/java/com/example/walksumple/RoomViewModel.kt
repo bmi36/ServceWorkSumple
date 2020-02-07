@@ -12,15 +12,23 @@ class RoomViewModel(application: Application) : AndroidViewModel(application){
         StepRepository(it)
     }
 
-    val stepList: MutableLiveData<Int> = MutableLiveData()
+    val stepList: MutableLiveData<ArrayList<StepEntity>> = MutableLiveData()
 
-    var mstepList: Int? = null
+    private var mstepList: ArrayList<StepEntity>
+
+    init {
+        mstepList = repository.allstep
+        stepList.postValue(mstepList)
+    }
 
     fun insert(entity: StepEntity) = viewModelScope.launch { repository.insert(entity) }
     fun update(entity: StepEntity) = viewModelScope.launch{ repository.update(entity) }
-    fun serchStep(date: Long) = repository.getsum(date).let {list->
-        list.map { insert(StepEntity(date,it)) }
-        mstepList = list.sum()
-        stepList.postValue(mstepList)
-    }
+    fun
+
+
+//    fun serchStep(date: Long) = viewModelScope.launch { repository.getsum(date).let {list->
+//        list.map { insert(StepEntity(date,it)) }
+//        mstepList = list
+//        stepList.postValue(mstepList)
+//    } }
 }
