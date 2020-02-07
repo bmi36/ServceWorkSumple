@@ -32,6 +32,7 @@ class MainActivity : AppCompatActivity() {
                 roomModel = ViewModelProvider.AndroidViewModelFactory.getInstance(application)
                     .create(RoomViewModel::class.java).apply {
                     service.list?.map { insert(it) }
+                        serchStep(Calendar.getInstance().time.toTypeDate())
                     service.defListe()
                 }
                 roomModel.stepList.observe(this@MainActivity, androidx.lifecycle.Observer {

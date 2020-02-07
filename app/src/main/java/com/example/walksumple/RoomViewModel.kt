@@ -18,8 +18,9 @@ class RoomViewModel(application: Application) : AndroidViewModel(application){
 
     fun insert(entity: StepEntity) = viewModelScope.launch { repository.insert(entity) }
     fun update(entity: StepEntity) = viewModelScope.launch{ repository.update(entity) }
-    fun serchStep(date: Long) = repository.getsum(date).let {
-        mstepList = it.sum()
+    fun serchStep(date: Long) = repository.getsum(date).let {list->
+        list.map { insert(StepEntity(date,it)) }
+        mstepList = list.sum()
         stepList.postValue(mstepList)
     }
 }
