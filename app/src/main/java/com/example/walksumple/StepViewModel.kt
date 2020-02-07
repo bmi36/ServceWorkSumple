@@ -8,8 +8,8 @@ import java.util.*
 class StepViewModel : ViewModel() {
 
 
-    private val stepEntity: MutableLiveData<StepEntity> = MutableLiveData()
-    var mstepEntity: StepEntity? = null
+    val stepEntity: MutableLiveData<StepEntity> = MutableLiveData()
+    private var mstepEntity: StepEntity? = null
 
     fun getStep(step: Int){
         val date = SimpleDateFormat("yyyyMMdd", Locale.JAPAN).format(Calendar.getInstance().time)

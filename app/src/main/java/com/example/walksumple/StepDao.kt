@@ -1,5 +1,6 @@
 package com.example.walksumple
 
+import androidx.lifecycle.MutableLiveData
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.Query
@@ -8,7 +9,7 @@ import androidx.room.Update
 @Dao
 interface StepDao{
     @Query("select sum(step) from entity where data like :data ||'%' group by data ||'%'")
-    suspend fun getsumSteps(data: Long):List<Int>
+    fun getsumSteps(data: Long): ArrayList<Int>
 
     @Insert
     suspend fun insert(entity: StepEntity)
