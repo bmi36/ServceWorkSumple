@@ -1,5 +1,7 @@
 package com.example.walksumple
 
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.Query
@@ -18,7 +20,4 @@ interface StepDao{
 
     @Query("select sum(step) from entity where data between :year || 01 || '%' and :year || 12 || '%' group by data")
     fun getMonth(year: Long): IntArray
-
-    @Query("select * from entity")
-    fun allStep(): ArrayList<StepEntity>
 }

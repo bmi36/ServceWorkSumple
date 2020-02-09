@@ -10,7 +10,12 @@ import android.hardware.SensorManager
 import android.os.Binder
 import android.os.IBinder
 import android.util.Log
-import androidx.lifecycle.*
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.ServiceLifecycleDispatcher
+import androidx.lifecycle.ViewModelProvider
+import java.text.SimpleDateFormat
+import java.util.*
 
 
 class StepService : Service(), SensorEventListener, LifecycleOwner {
@@ -20,14 +25,14 @@ class StepService : Service(), SensorEventListener, LifecycleOwner {
     private lateinit var serviceViewModel: StepViewModel
     var step = 0
     private val dispatcher = ServiceLifecycleDispatcher(this)
-    var list: ArrayList<StepEntity>? = arrayListOf()
-    //    private val manager = WorkManager.getInstance(this)
+
     override fun onCreate() {
         super.onCreate()
+        val date = SimpleDateFormat("yyyyMMdd", Locale.JAPAN).format(Calendar.getInstance().time)
+        step = getSharedPreferences("STEP",Context.MODE_PRIVATE).getInt(date,0)
         mSensorManager = getSystemService(Context.SENSOR_SERVICE) as SensorManager
         mstepConterSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_STEP_COUNTER)
-        mSensorManager.unregisterListener(this, mstepConterSensor)
-
+        mSensorManager.registerListener(this, mstepConterSensor, SensorManager.SENSOR_DELAY_NORMAL)
         serviceViewModel = ViewModelProvider.AndroidViewModelFactory.getInstance(application)
             .create(StepViewModel::class.java)
     }
@@ -41,34 +46,14 @@ class StepService : Service(), SensorEventListener, LifecycleOwner {
     override fun onSensorChanged(event: SensorEvent) {
         if (event.sensor.type == Sensor.TYPE_STEP_COUNTER) {
             serviceViewModel.getStep(step++)
+            val date = SimpleDateFormat("yyyyMMdd", Locale.JAPAN).format(Calendar.getInstance().time)
+            getSharedPreferences("STEP",Context.MODE_PRIVATE).edit().putInt(date,step).commit()
             Log.d("step", step.toString())
         }
     }
 
-    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        serviceViewModel.stepEntity.observe(this, Observer {
-            list?.let { list ->
-                if (list.isEmpty()) list.add(it) else list.find { element -> element.id == it.id }.let { element ->
-                    if (element != null) element.step = it.step
-                }
-                list.forEach { element -> if (element.id == it.id) element.step = it.step }
-            } ?: arrayListOf(it)
-        })
-        return super.onStartCommand(intent, flags, startId)
-    }
-
-
-    override fun onDestroy() {
-        super.onDestroy()
-        mSensorManager.registerListener(this, mstepConterSensor, SensorManager.SENSOR_DELAY_NORMAL)
-        getSharedPreferences("STEP", Context.MODE_PRIVATE).edit().putInt("step", step).apply()
-    }
-
-    fun defListe(){ list = null }
-
     inner class StepBindar : Binder() {
         fun getBindar(): StepService = this@StepService
     }
-
     override fun getLifecycle(): Lifecycle = dispatcher.lifecycle
 }

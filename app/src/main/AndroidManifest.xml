@@ -10,7 +10,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
-        <service android:name=".StepService"/>
+        <service android:name="com.example.walksumple.StepService"/>
 
         <activity android:name=".MainActivity">
             <intent-filter>
